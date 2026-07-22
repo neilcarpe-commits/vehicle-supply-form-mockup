@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Proposed Submission Form — Mobile Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12201a;
+    --paper:#EEEFEB;
+    --line:#dcdfda;
+    --line-strong:#12201a;
+    --green:#16301f;
+    --green-dim:#e7ede9;
+    --muted:#6f7a73;
+    --required:#DC2626;
+    --new-badge:#16301f;
+    --optional-badge:#8a8f7e;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{ margin:0; background:#EEEFEB; }
+  body{
+    font-family:'DM Sans', sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* phone frame — purely for viewing this demo on desktop;
+     on an actual phone browser this collapses to full width */
+  .phone-frame{
+    max-width:420px;
+    margin:24px auto;
+    background:#000;
+    border-radius:38px;
+    padding:14px;
+    box-shadow:0 30px 60px rgba(0,0,0,0.25);
+  }
+  .phone-screen{
+    background:var(--paper);
+    border-radius:26px;
+    overflow-y:auto;
+    height:844px;
+    -webkit-overflow-scrolling:touch;
+    position:relative;
+  }
+  @media (max-width:460px){
+    .phone-frame{ padding:0; border-radius:0; box-shadow:none; margin:0; max-width:100%; }
+    .phone-screen{ border-radius:0; height:100vh; }
+  }
+
+  .statusbar{
+    height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    font-size:13px;
+    font-weight:600;
+    position:sticky;
+    top:0;
+    background:var(--paper);
+    z-index:5;
+  }
+
+  .content{ padding:0 18px 100px; }
+
+  .toolbar{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:12px 14px;
+    border:none;
+    border-radius:1px;
+    background:#000;
+    margin-bottom:20px;
+  }
+  .toolbar-label{
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.6);
+    font-weight:700;
+  }
+  .toggle{
+    display:flex;
+    border:none;
+    border-radius:1px;
+    overflow:hidden;
+  }
+  .toggle button{
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:9px 10px;
+    font-family:'DM Sans', sans-serif;
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+    color:#fff;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+  .toggle button.active{ background:#B4DBE7; color:var(--ink); }
+
+  .banner{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:12px 13px;
+    border-radius:1px;
+    background:rgba(180, 219, 231, 0.25);
+    margin-bottom:22px;
+    font-size:12.5px;
+    line-height:1.5;
+    color:#233a2c;
+  }
+  .banner b{ color:var(--green); }
+
+  h1.page-title{
+    font-family:'DM Sans', sans-serif;
+    font-weight:600;
+    font-size:19px;
+    letter-spacing:-0.01em;
+    margin:6px 0 4px;
+    text-transform:uppercase;
+  }
+  .subtitle{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:22px;
+    line-height:1.4;
+  }
+
+  .type-toggle{
+    display:flex;
+    margin-bottom:24px;
+    border:1px solid var(--line-strong);
+    border-radius:1px;
+    overflow:hidden;
+  }
+  .type-toggle div{
+    flex:1;
+    text-align:center;
+    padding:11px 10px;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.02em;
+  }
+  .type-toggle .on{ background:var(--green); color:#fff; }
+  .type-toggle .off{ background:#fff; color:var(--ink); border-left:1px solid var(--line-strong);}
+
+  section.block{ margin-bottom:30px; }
+  h2.section-title{ display:flex; align-items:center; gap:8px; font-size:15px; font-weight:700; margin:0 0 4px; text-transform:uppercase; }
+  .section-sub{ font-size:12.5px; color:var(--muted); margin-bottom:14px; line-height:1.4; }
+
+  .field{ margin-bottom:16px; }
+  label{
+    display:flex; align-items:center; gap:6px;
+    font-size:11px; font-weight:700; letter-spacing:0.04em;
+    text-transform:uppercase; margin-bottom:7px;
+  }
+  .req{ color:var(--required); font-weight:700; display:inline-flex; align-items:center; }
+  .req-icon{ width:8.5px; height:8.5px; fill:var(--required); display:inline-block; }
+  .ui-icon{ width:16px; height:16px; fill:currentColor; display:inline-block; flex:none; }
+  .help{ font-size:12px; color:var(--muted); margin-top:6px; line-height:1.4; }
+
+  input[type=text], input[type=tel], input[type=email], input[type=number], select, textarea{
+    width:100%;
+    border:none;
+    border-radius:1px;
+    padding:13px 12px;
+    font-family:'DM Sans', sans-serif;
+    font-size:14px;
+    color:#fff;
+    background:#000;
+  }
+  textarea{ resize:vertical; min-height:80px; }
+  input::placeholder, textarea::placeholder{ color:rgba(255,255,255,0.45); }
+  input:focus, select:focus, textarea:focus,
+  input:hover, select:hover, textarea:hover{ outline:2px solid #B4DBE7; outline-offset:1px; }
+
+  /* CUSTOM DROPDOWN (replaces native select popups so panel corners can match form boxes) */
+  .custom-select{ position:relative; width:100%; }
+  .custom-select-trigger{
+    width:100%;
+    border:none;
+    border-radius:1px;
+    padding:13px 12px;
+    font-family:'DM Sans', sans-serif;
+    font-size:14px;
+    color:#fff;
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    cursor:pointer;
+    text-align:left;
+  }
+  .custom-select-trigger:hover,
+  .custom-select-trigger:focus,
+  .custom-select.open .custom-select-trigger{ outline:2px solid #B4DBE7; outline-offset:1px; }
+  .custom-select-trigger .caret{ width:14px; height:14px; fill:rgba(255,255,255,0.65); flex:none; transition:transform .15s ease; }
+  .custom-select.open .custom-select-trigger .caret{ transform:rotate(180deg); }
+  .custom-select-panel{
+    position:absolute;
+    top:calc(100% + 4px);
+    left:0; right:0;
+    z-index:30;
+    background:#000;
+    border:none;
+    border-radius:1px;
+    max-height:260px;
+    overflow-y:auto;
+    box-shadow:0 8px 24px rgba(18,32,26,0.35);
+    display:none;
+  }
+  .custom-select.open .custom-select-panel{ display:block; }
+  .custom-select-optgroup-label{
+    padding:8px 12px 4px;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.55);
+  }
+  .custom-select-option{
+    padding:10px 12px;
+    font-size:14px;
+    color:#fff;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .custom-select-option:hover{ background:#B4DBE7; color:var(--ink); }
+  .custom-select-option .check{ width:12px; height:12px; fill:#fff; flex:none; visibility:hidden; }
+  .custom-select-option:hover .check{ fill:var(--ink); }
+  .custom-select-option.selected .check{ visibility:visible; }
+
+  .tag{
+    display:inline-block; vertical-align:middle; font-size:9px; font-weight:700;
+    letter-spacing:0.05em; text-transform:uppercase;
+    padding:2px 6px; border-radius:1px;
+  }
+  .tag.now-optional{ background:var(--optional-badge); color:#fff; }
+  .tag.new{ background:#B4DBE7; color:var(--ink); }
+
+  .prefix-input{
+    display:flex;
+    align-items:center;
+    border:none;
+    border-radius:1px;
+    background:#000;
+    overflow:hidden;
+  }
+  .prefix-input .prefix{
+    padding:13px 0 13px 12px;
+    font-size:16px;
+    color:rgba(255,255,255,0.6);
+    font-weight:600;
+  }
+  .prefix-input input{
+    border:none;
+    padding:13px 12px 13px 4px;
+  }
+  .prefix-input input:focus{ outline:none; }
+  .prefix-input:focus-within, .prefix-input:hover{ outline:2px solid #B4DBE7; outline-offset:1px; }
+
+  /* PHOTO CAPTURE */
+  .photo-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .photo-btn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    border:none;
+    border-radius:1px;
+    padding:20px 8px;
+    background:rgba(180, 219, 231, 0.25);
+    color:var(--ink);
+    cursor:pointer;
+    text-align:center;
+  }
+  .photo-btn:hover{ outline:2px solid #B4DBE7; outline-offset:1px; }
+  .photo-btn .icon{ width:22px; height:22px; fill:currentColor; display:inline-block; }
+  .photo-btn .label{ font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; }
+  .photo-btn.primary{ background:rgba(180, 219, 231, 0.25); color:var(--ink); }
+  .photo-btn.primary .label{ color:var(--ink); }
+  .photo-btn input[type=file]{ display:none; }
+
+  .thumb-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .thumb{
+    aspect-ratio:1;
+    border-radius:1px;
+    background:rgba(180, 219, 231, 0.25);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    font-weight:700;
+    color:var(--ink);
+    position:relative;
+    overflow:hidden;
+  }
+  .thumb.filled{ background:linear-gradient(135deg,#8fae94,#4f7256); color:#fff; font-weight:700; }
+  .thumb .x{
+    position:absolute; top:3px; right:3px;
+    width:16px; height:16px; border-radius:50%;
+    background:rgba(0,0,0,0.55); color:#fff;
+    font-size:10px; display:flex; align-items:center; justify-content:center;
+  }
+  .photo-count{ font-size:11.5px; color:var(--muted); }
+
+  .consent-box{
+    border:none;
+    border-radius:1px;
+    padding:14px;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    margin-bottom:12px;
+    background:#000;
+  }
+  .consent-box input{ width:18px; height:18px; margin-top:2px; accent-color:#B4DBE7; flex:none; }
+  .consent-box .ctext{ font-size:12.5px; line-height:1.5; color:#fff; }
+  .consent-box a{ color:#B4DBE7; }
+
+  /* sticky submit bar */
+  .submit-bar{
+    position:sticky;
+    bottom:0;
+    left:0; right:0;
+    background:linear-gradient(to top, #fff 70%, rgba(255,255,255,0));
+    padding:18px 18px 22px;
+    margin:0 -18px;
+  }
+  button.submit{
+    width:100%;
+    background:#B4DBE7;
+    color:var(--ink);
+    border:none;
+    padding:16px;
+    border-radius:1px;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.08em;
+    cursor:pointer;
+    text-transform:uppercase;
+  }
+  button.submit:hover{
+    background:#000;
+    color:#fff;
+  }
+
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(18,32,26,0.55);
+    display:none; align-items:flex-end; justify-content:center;
+    z-index:50;
+  }
+  .overlay.show{ display:flex; }
+  .sheet{
+    background:#fff;
+    border-radius:1px;
+    width:100%;
+    max-width:420px;
+    padding:28px 24px 34px;
+    text-align:center;
+  }
+  .sheet .check{
+    width:44px; height:44px; border-radius:50%;
+    background:var(--green-dim); display:flex; align-items:center; justify-content:center;
+    margin:0 auto 16px; color:var(--green); font-size:20px;
+  }
+  .sheet h3{ font-family:'DM Sans', sans-serif; font-weight:700; font-size:19px; margin:0 0 8px; text-transform:uppercase; }
+  .sheet p{ font-size:13px; color:var(--muted); line-height:1.5; margin:0 0 20px; }
+  .sheet button{
+    width:100%; padding:14px; border-radius:1px; font-size:12px; font-weight:600;
+    border:none; cursor:pointer; margin-bottom:9px; text-transform:uppercase; letter-spacing:0.08em;
+  }
+  .sheet .primary{ background:var(--green); color:#fff; }
+  .sheet .secondary{ background:transparent; color:var(--muted); border:1px solid var(--line-strong); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="fuchs-mark" viewBox="0 0 197.84 190.9">
+    <path d="M197.54,87.74l-.62-2.79c-2.53-11.3-6.11-22.34-10.71-32.97l-1.14-2.63c-1.25-3.86-5.84-5.47-9.23-3.23l-60.12,39.75c-5.04,3.33-11.52-1.37-9.9-7.2L125.12,8.87c1.08-3.91-1.86-7.78-5.92-7.78l-2.85-.27c-11.53-1.09-23.14-1.09-34.67,0l-2.85.27c-4.06,0-7,3.87-5.92,7.78l19.36,69.96c1.61,5.82-4.86,10.53-9.9,7.2L22.01,46.12c-3.39-2.24-7.98-.64-9.23,3.23l-1.12,2.59C7.05,62.58,3.46,73.63.93,84.94l-.62,2.79c-1.25,3.86,1.52,7.86,5.57,8.04l72.46,3.2c6.04.27,8.51,7.88,3.78,11.64l-57.27,45.6c-3.18,2.53-3.07,7.39.22,9.78l2.15,1.89c8.69,7.66,18.08,14.48,28.05,20.38l2.46,1.46c3.28,2.39,7.94.99,9.36-2.82l25.78-68.84c2.12-5.66,10.12-5.66,12.24,0l25.78,68.84c1.42,3.8,6.08,5.2,9.36,2.82l2.47-1.46c9.97-5.89,19.36-12.72,28.04-20.37l2.15-1.89c3.28-2.39,3.39-7.25.22-9.78l-57.27-45.61c-4.73-3.76-2.25-11.38,3.78-11.64l72.32-3.19c4.06-.18,6.83-4.17,5.57-8.04ZM98.92,99.29v.02s0,0,0,0h0Z"/>
+  </symbol>
+  <symbol id="icon-lock-open" viewBox="0 0 256 256">
+    <path d="M208,80H96V56a32,32,0,0,1,32-32c15.37,0,29.2,11,32.16,25.59a8,8,0,0,0,15.68-3.18C171.32,24.15,151.2,8,128,8A48.05,48.05,0,0,0,80,56V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Zm0,128H48V96H208V208Zm-68-56a12,12,0,1,1-12-12A12,12,0,0,1,140,152Z"/>
+  </symbol>
+  <symbol id="icon-camera" viewBox="0 0 256 256">
+    <path d="M208,56H180.28L166.65,35.56A8,8,0,0,0,160,32H96a8,8,0,0,0-6.65,3.56L75.71,56H48A24,24,0,0,0,24,80V192a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80A24,24,0,0,0,208,56Zm8,136a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H80a8,8,0,0,0,6.66-3.56L100.28,48h55.43l13.63,20.44A8,8,0,0,0,176,72h32a8,8,0,0,1,8,8ZM128,88a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,88Zm0,72a28,28,0,1,1,28-28A28,28,0,0,1,128,160Z"/>
+  </symbol>
+  <symbol id="icon-image" viewBox="0 0 256 256">
+    <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,172l52-52,80,80H40Zm176,28H194.63l-36-36,20-20L216,181.38V200ZM144,100a12,12,0,1,1,12,12A12,12,0,0,1,144,100Z"/>
+  </symbol>
+  <symbol id="icon-caret-down" viewBox="0 0 256 256">
+    <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/>
+  </symbol>
+  <symbol id="icon-check" viewBox="0 0 256 256">
+    <path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"/>
+  </symbol>
+</svg>
+
+<div class="phone-frame">
+  <div class="phone-screen" id="scroll-area">
+    <div class="statusbar"><span>9:41</span><span>●●●●&nbsp; 5G &nbsp;🔋</span></div>
+
+    <div class="content">
+      <h1 class="page-title">Submit Your Vehicle</h1>
+      <div class="subtitle">Fields marked <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span> are required. Everything else helps us list faster, but won't hold up your submission.</div>
+
+      <div class="toolbar">
+        <span class="toolbar-label">Demo view</span>
+        <div class="toggle">
+          <button id="btn-anon" class="active" onclick="setMode('anon')">Not logged in</button>
+          <button id="btn-user" onclick="setMode('user')">Logged in</button>
+        </div>
+      </div>
+
+      <div class="banner" id="gate-banner">
+        <svg class="ui-icon"><use href="#icon-lock-open"/></svg>
+        <span><b>No login required.</b> The old account + registered-bidder gate is removed — anyone can submit directly from their phone.</span>
+      </div>
+
+      <section class="block">
+        <h2 class="section-title">Vehicle Information</h2>
+        <div class="field">
+          <label>VIN <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+          <input type="text" placeholder="Enter full VIN">
+        </div>
+
+        <div class="field">
+          <label>Make <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+          <select id="make-select" onchange="toggleMakeOther(this.value)">
+            <option value="">Select make…</option>
+            <optgroup label="Most popular">
+              <option>Porsche</option><option>BMW</option><option>Mercedes-Benz</option>
+              <option>Chevrolet</option><option>Ferrari</option>
+            </optgroup>
+            <optgroup label="A–Z">
+              <option>Alfa Romeo</option><option>Aston Martin</option><option>Audi</option>
+              <option>Bentley</option><option>Cadillac</option><option>Fiat</option>
+              <option>Ford</option><option>Jaguar</option><option>Lamborghini</option>
+              <option>Land Rover</option><option>Maserati</option><option>Mini</option>
+              <option>Nissan</option><option>Toyota</option><option>Volkswagen</option>
+            </optgroup>
+            <option value="other">Other — please specify</option>
+          </select>
+          <input type="text" id="make-other-input" placeholder="Type the make…" style="display:none; margin-top:10px;">
+        </div>
+
+        <div class="field">
+          <label>Year <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+          <select onchange="toggleYearOther(this.value)">
+            <option value="">Select year…</option>
+            <option>2026</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option><option>2020</option><option>2019</option><option>2018</option><option>2017</option><option>2016</option><option>2015</option><option>2014</option><option>2013</option><option>2012</option><option>2011</option><option>2010</option><option>2009</option><option>2008</option><option>2007</option><option>2006</option><option>2005</option><option>2004</option><option>2003</option><option>2002</option><option>2001</option><option>2000</option><option>1999</option><option>1998</option><option>1997</option><option>1996</option><option>1995</option><option>1994</option><option>1993</option><option>1992</option><option>1991</option><option>1990</option><option>1989</option><option>1988</option><option>1987</option><option>1986</option><option>1985</option><option>1984</option><option>1983</option><option>1982</option><option>1981</option><option>1980</option><option>1979</option><option>1978</option><option>1977</option><option>1976</option><option>1975</option><option>1974</option><option>1973</option><option>1972</option><option>1971</option><option>1970</option><option>1969</option><option>1968</option><option>1967</option><option>1966</option><option>1965</option><option>1964</option><option>1963</option><option>1962</option><option>1961</option><option>1960</option><option>1959</option><option>1958</option><option>1957</option><option>1956</option><option>1955</option><option>1954</option><option>1953</option><option>1952</option><option>1951</option><option>1950</option>
+            <option value="other">Other — please specify</option>
+          </select>
+          <input type="text" id="year-other-input" placeholder="Type the year…" style="display:none; margin-top:10px;">
+        </div>
+
+        <div class="field">
+          <label>Model <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+          <select onchange="toggleModelOther(this.value)">
+            <option value="">Select model…</option>
+            <option>911 Cabriolet</option><option>911 Carrera</option><option>911 Carrera 4</option>
+            <option>911 Carrera 4 Cabriolet</option><option>911 Carrera 4S</option>
+            <option>911 Carrera 4S Cabriolet</option><option>911 Carrera S</option>
+            <option>911 Carrera S Cabriolet</option><option>911 GT3</option><option>911 GT3 RS</option>
+            <option>911 Targa</option><option>911 Turbo</option><option>911 Turbo S</option>
+            <option value="other">Other — please specify</option>
+          </select>
+          <input type="text" id="model-other-input" placeholder="Type the model…" style="display:none; margin-top:10px;">
+          <div class="help">Taxonomy gaps no longer block submission — pick "Other" if your model isn't listed.</div>
+        </div>
+
+        <div class="field">
+          <label>Estimated Odometer Reading <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+          <input type="number" placeholder="e.g. 42,300">
+        </div>
+
+        <div class="field">
+          <label>Description</label>
+          <textarea placeholder="Describe the vehicle's condition, notable features, history, and any modifications…"></textarea>
+        </div>
+      </section>
+
+      <!-- PHOTOS: capture on device OR upload -->
+      <section class="block">
+        <h2 class="section-title">Photos <span class="tag new">Take photos in‑app</span></h2>
+        <div class="section-sub">Snap photos right now with your camera, or upload from your library. High-quality photos help attract more bidders.</div>
+
+        <div class="photo-actions">
+          <label class="photo-btn primary">
+            <svg class="icon"><use href="#icon-camera"/></svg>
+            <span class="label">Take Photo</span>
+            <input type="file" accept="image/*" capture="environment" multiple onchange="addPhotos(this.files)">
+          </label>
+          <label class="photo-btn">
+            <svg class="icon"><use href="#icon-image"/></svg>
+            <span class="label">Upload Files</span>
+            <input type="file" accept="image/*" multiple onchange="addPhotos(this.files)">
+          </label>
+        </div>
+
+        <div class="thumb-grid" id="thumb-grid">
+          <div class="thumb">+</div>
+          <div class="thumb">+</div>
+          <div class="thumb">+</div>
+          <div class="thumb">+</div>
+        </div>
+        <div class="photo-count" id="photo-count">0 of 200 photos added · JPEG, PNG, HEIC/HEIF · max 200MB each</div>
+      </section>
+
+      <section class="block">
+        <h2 class="section-title">Location</h2>
+        <div class="field">
+          <label>ZIP Code <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+          <input type="text" placeholder="Enter ZIP code">
+        </div>
+        <div class="field">
+          <label>Country</label>
+          <select><option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Andorra</option><option>Angola</option><option>Argentina</option><option>Armenia</option><option>Australia</option><option>Austria</option><option>Azerbaijan</option><option>Bahamas</option><option>Bahrain</option><option>Bangladesh</option><option>Barbados</option><option>Belarus</option><option>Belgium</option><option>Belize</option><option>Benin</option><option>Bhutan</option><option>Bolivia</option><option>Bosnia and Herzegovina</option><option>Botswana</option><option>Brazil</option><option>Brunei</option><option>Bulgaria</option><option>Burkina Faso</option><option>Burundi</option><option>Cambodia</option><option>Cameroon</option><option>Canada</option><option>Cape Verde</option><option>Central African Republic</option><option>Chad</option><option>Chile</option><option>China</option><option>Colombia</option><option>Comoros</option><option>Congo</option><option>Costa Rica</option><option>Croatia</option><option>Cuba</option><option>Cyprus</option><option>Czech Republic</option><option>Denmark</option><option>Djibouti</option><option>Dominica</option><option>Dominican Republic</option><option>Ecuador</option><option>Egypt</option><option>El Salvador</option><option>Equatorial Guinea</option><option>Eritrea</option><option>Estonia</option><option>Eswatini</option><option>Ethiopia</option><option>Fiji</option><option>Finland</option><option>France</option><option>Gabon</option><option>Gambia</option><option>Georgia</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Grenada</option><option>Guatemala</option><option>Guinea</option><option>Guinea-Bissau</option><option>Guyana</option><option>Haiti</option><option>Honduras</option><option>Hungary</option><option>Iceland</option><option>India</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Israel</option><option>Italy</option><option>Jamaica</option><option>Japan</option><option>Jordan</option><option>Kazakhstan</option><option>Kenya</option><option>Kiribati</option><option>Kosovo</option><option>Kuwait</option><option>Kyrgyzstan</option><option>Laos</option><option>Latvia</option><option>Lebanon</option><option>Lesotho</option><option>Liberia</option><option>Libya</option><option>Liechtenstein</option><option>Lithuania</option><option>Luxembourg</option><option>Madagascar</option><option>Malawi</option><option>Malaysia</option><option>Maldives</option><option>Mali</option><option>Malta</option><option>Marshall Islands</option><option>Mauritania</option><option>Mauritius</option><option>Mexico</option><option>Micronesia</option><option>Moldova</option><option>Monaco</option><option>Mongolia</option><option>Montenegro</option><option>Morocco</option><option>Mozambique</option><option>Myanmar</option><option>Namibia</option><option>Nauru</option><option>Nepal</option><option>Netherlands</option><option>New Zealand</option><option>Nicaragua</option><option>Niger</option><option>Nigeria</option><option>North Korea</option><option>North Macedonia</option><option>Norway</option><option>Oman</option><option>Pakistan</option><option>Palau</option><option>Palestine</option><option>Panama</option><option>Papua New Guinea</option><option>Paraguay</option><option>Peru</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Romania</option><option>Russia</option><option>Rwanda</option><option>Saint Kitts and Nevis</option><option>Saint Lucia</option><option>Saint Vincent and the Grenadines</option><option>Samoa</option><option>San Marino</option><option>Sao Tome and Principe</option><option>Saudi Arabia</option><option>Senegal</option><option>Serbia</option><option>Seychelles</option><option>Sierra Leone</option><option>Singapore</option><option>Slovakia</option><option>Slovenia</option><option>Solomon Islands</option><option>Somalia</option><option>South Africa</option><option>South Korea</option><option>South Sudan</option><option>Spain</option><option>Sri Lanka</option><option>Sudan</option><option>Suriname</option><option>Sweden</option><option>Switzerland</option><option>Syria</option><option>Taiwan</option><option>Tajikistan</option><option>Tanzania</option><option>Thailand</option><option>Timor-Leste</option><option>Togo</option><option>Tonga</option><option>Trinidad and Tobago</option><option>Tunisia</option><option>Turkey</option><option>Turkmenistan</option><option>Tuvalu</option><option>Uganda</option><option>Ukraine</option><option>United Arab Emirates</option><option>United Kingdom</option><option selected>United States</option><option>Uruguay</option><option>Uzbekistan</option><option>Vanuatu</option><option>Vatican City</option><option>Venezuela</option><option>Vietnam</option><option>Yemen</option><option>Zambia</option><option>Zimbabwe</option></select>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2 class="section-title">Auction Details <span class="tag new">Updated</span></h2>
+        <div class="field">
+          <label>Price Expectation (US$)</label>
+          <div class="prefix-input">
+            <span class="prefix">$</span>
+            <input type="text" inputmode="numeric" placeholder="0" oninput="formatCurrency(this)">
+          </div>
+          <div class="help">What price would you like to achieve? Our sales team will discuss reserve strategy with you directly before the auction goes live.</div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2 class="section-title">Contact Information</h2>
+
+        <div id="contact-block">
+          <div class="section-sub">Since you're not logged in, we just need a way to reach you. <span class="tag new">New</span></div>
+          <div class="field">
+            <label>First Name <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+            <input type="text" placeholder="Enter your first name">
+          </div>
+          <div class="field">
+            <label>Last Name <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+            <input type="text" placeholder="Enter your last name">
+          </div>
+          <div class="field">
+            <label>Email Address <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+            <input type="email" placeholder="your.email@example.com">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Phone Number <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></label>
+          <input type="tel" placeholder="(555) 123-4567">
+        </div>
+        <div class="field">
+          <label>How did you hear about us?</label>
+          <select>
+            <option>Select an option</option>
+            <option>Google / web search</option>
+            <option>Instagram</option>
+            <option>Facebook</option>
+            <option>Previous buyer or seller on PCARMARKET</option>
+            <option>Referred by a friend</option>
+            <option>Enthusiast forum or club (e.g. Rennlist, PCA)</option>
+            <option>Email from PCARMARKET</option>
+            <option>Auction result / listing I saw</option>
+            <option>Podcast or YouTube</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="consent-box">
+          <input type="checkbox">
+          <div class="ctext">I agree to the <a>terms and conditions</a> and the <a>seller agreement</a>. <span class="req"><svg class="req-icon"><use href="#fuchs-mark"/></svg></span></div>
+        </div>
+        <div class="consent-box">
+          <input type="checkbox">
+          <div class="ctext">Send me emails about sales, market trends, and new features. <span class="tag new">New</span></div>
+        </div>
+      </section>
+
+      <div class="submit-bar">
+        <button class="submit" onclick="showModal()">Submit Vehicle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <div class="check">✓</div>
+    <h3>Submission received</h3>
+    <p>We'll be in touch shortly. Want to save your details and track this submission?</p>
+    <button class="primary" onclick="closeModal()">Create an account</button>
+    <button class="secondary" onclick="closeModal()">Maybe later</button>
+  </div>
+</div>
+
+<script>
+function setMode(mode){
+  const contactBlock = document.getElementById('contact-block');
+  const banner = document.getElementById('gate-banner');
+  const btnAnon = document.getElementById('btn-anon');
+  const btnUser = document.getElementById('btn-user');
+  if(mode === 'anon'){
+    contactBlock.style.display = 'block';
+    banner.style.display = 'flex';
+    btnAnon.classList.add('active');
+    btnUser.classList.remove('active');
+  } else {
+    contactBlock.style.display = 'none';
+    banner.style.display = 'none';
+    btnUser.classList.add('active');
+    btnAnon.classList.remove('active');
+  }
+}
+function showModal(){ document.getElementById('overlay').classList.add('show'); }
+function closeModal(){ document.getElementById('overlay').classList.remove('show'); }
+
+function toggleMakeOther(value){
+  const input = document.getElementById('make-other-input');
+  if(value === 'other'){ input.style.display = 'block'; input.focus(); }
+  else { input.style.display = 'none'; input.value = ''; }
+}
+
+function toggleYearOther(value){
+  const input = document.getElementById('year-other-input');
+  if(value === 'other'){ input.style.display = 'block'; input.focus(); }
+  else { input.style.display = 'none'; input.value = ''; }
+}
+
+function formatCurrency(input){
+  let digits = input.value.replace(/[^0-9]/g, '');
+  if(digits === ''){ input.value = ''; return; }
+  digits = digits.replace(/^0+(?=\d)/, '');
+  input.value = Number(digits).toLocaleString('en-US');
+}
+function toggleModelOther(value){
+  const input = document.getElementById('model-other-input');
+  if(value === 'other'){ input.style.display = 'block'; input.focus(); }
+  else { input.style.display = 'none'; input.value = ''; }
+}
+
+let photoCount = 0;
+function addPhotos(files){
+  const grid = document.getElementById('thumb-grid');
+  const n = files ? files.length : 1;
+  for(let i=0; i<n && photoCount < 200; i++){
+    photoCount++;
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb filled';
+    thumb.innerHTML = photoCount + '<span class="x" onclick="this.parentElement.remove(); photoCount--; updateCount();">×</span>';
+    grid.insertBefore(thumb, grid.firstChild);
+  }
+  updateCount();
+}
+function updateCount(){
+  document.getElementById('photo-count').textContent = photoCount + ' of 200 photos added · JPEG, PNG, HEIC/HEIF · max 200MB each';
+}
+
+/* CUSTOM DROPDOWN: progressively enhances a native <select> into a styled
+   trigger + panel so the dropdown's corners/hover states match the rest of
+   the form. The original <select> stays in the DOM (hidden) as the source
+   of truth — clicking an option updates its value and dispatches a real
+   'change' event, so existing onchange handlers keep working unchanged. */
+function enhanceSelect(select){
+  if(select.dataset.enhanced) return;
+  select.dataset.enhanced = 'true';
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'custom-select';
+
+  const trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'custom-select-trigger';
+
+  const triggerLabel = document.createElement('span');
+  trigger.appendChild(triggerLabel);
+
+  const caret = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  caret.setAttribute('class', 'caret');
+  const caretUse = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  caretUse.setAttribute('href', '#icon-caret-down');
+  caret.appendChild(caretUse);
+  trigger.appendChild(caret);
+
+  const panel = document.createElement('div');
+  panel.className = 'custom-select-panel';
+
+  function closePanel(){
+    wrapper.classList.remove('open');
+    document.removeEventListener('click', onDocClick);
+    document.removeEventListener('keydown', onKeyDown);
+  }
+  function openPanel(){
+    document.querySelectorAll('.custom-select.open').forEach(el => { if(el !== wrapper) el.classList.remove('open'); });
+    wrapper.classList.add('open');
+    document.addEventListener('click', onDocClick);
+    document.addEventListener('keydown', onKeyDown);
+  }
+  function onDocClick(e){ if(!wrapper.contains(e.target)) closePanel(); }
+  function onKeyDown(e){ if(e.key === 'Escape') closePanel(); }
+
+  function buildOptionRow(optionEl){
+    const row = document.createElement('div');
+    row.className = 'custom-select-option';
+    if(optionEl.selected) row.classList.add('selected');
+
+    const text = document.createElement('span');
+    text.textContent = optionEl.textContent;
+
+    const check = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    check.setAttribute('class', 'check');
+    const checkUse = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    checkUse.setAttribute('href', '#icon-check');
+    check.appendChild(checkUse);
+
+    row.appendChild(text);
+    row.appendChild(check);
+
+    row.addEventListener('click', () => {
+      select.value = optionEl.value;
+      panel.querySelectorAll('.custom-select-option.selected').forEach(el => el.classList.remove('selected'));
+      row.classList.add('selected');
+      triggerLabel.textContent = optionEl.textContent;
+      closePanel();
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    return row;
+  }
+
+  Array.from(select.children).forEach(child => {
+    if(child.tagName === 'OPTGROUP'){
+      const label = document.createElement('div');
+      label.className = 'custom-select-optgroup-label';
+      label.textContent = child.label;
+      panel.appendChild(label);
+      Array.from(child.children).forEach(opt => panel.appendChild(buildOptionRow(opt)));
+    } else if(child.tagName === 'OPTION'){
+      panel.appendChild(buildOptionRow(child));
+    }
+  });
+
+  const selectedOption = select.options[select.selectedIndex];
+  triggerLabel.textContent = selectedOption ? selectedOption.textContent : '';
+
+  trigger.addEventListener('click', () => {
+    if(wrapper.classList.contains('open')) closePanel(); else openPanel();
+  });
+
+  select.style.display = 'none';
+  select.parentNode.insertBefore(wrapper, select);
+  wrapper.appendChild(trigger);
+  wrapper.appendChild(panel);
+  wrapper.appendChild(select);
+}
+
+document.querySelectorAll('select').forEach(enhanceSelect);
+</script>
+
+</body>
+</html>
