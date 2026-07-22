@@ -78,11 +78,13 @@
     margin-bottom:20px;
   }
   .toolbar-label{
+    display:block;
     font-size:11px;
     letter-spacing:0.06em;
     text-transform:uppercase;
-    color:rgba(255,255,255,0.6);
+    color:var(--ink);
     font-weight:700;
+    margin-bottom:7px;
   }
   .toggle{
     display:flex;
@@ -434,8 +436,8 @@
         <span><b>No login required.</b> The old account + registered-bidder gate is removed — anyone can submit directly from their phone.</span>
       </div>
 
+      <span class="toolbar-label">Demo view</span>
       <div class="toolbar">
-        <span class="toolbar-label">Demo view</span>
         <div class="toggle">
           <button id="btn-anon" class="active" onclick="setMode('anon')">Not logged in</button>
           <button id="btn-user" onclick="setMode('user')">Logged in</button>
